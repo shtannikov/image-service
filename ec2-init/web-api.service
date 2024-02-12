@@ -1,0 +1,11 @@
+[Unit]
+Description=web-api demo service
+After=network.target
+
+
+[Service]
+ExecStart=/apps/web-api
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
