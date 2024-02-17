@@ -1,0 +1,1 @@
+sudo systemctl stop web-api.service && sudo systemctl disable web-api.service && sudo aws s3 cp --recursive s3://shtannikov-api /apps/ && sudo mv /apps/web-api.service /etc/systemd/system/web-api.service && sudo mv /apps/appsettings.json / && sudo chmod +x /apps/web-api && sudo systemctl start web-api.service && sudo systemctl enable web-api.service
