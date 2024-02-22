@@ -33,7 +33,6 @@ builder.Services.AddAWSService<IAmazonSimpleNotificationService>();
 builder.Services.AddAWSService<IAmazonSQS>();
 
 builder.Services.AddTransient<IImageUploadedEventPublisher, ImageUploadedEventPublisher>();
-builder.Services.AddHostedService<NotificationDispatchService>();
 
 var app = builder.Build();
 
