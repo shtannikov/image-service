@@ -12,7 +12,7 @@ public class ImageUploadedEvent
         var fullImageName = $"{NewImage.Name}{NewImage.Extension}";
         var imageSize = $"{NewImage.Size / 1024} KB";
 
-        return "A new message has been uploaded: " +
+        return "A new image has been uploaded: " +
                $"{fullImageName} ({imageSize}). " +
                $"Download link: {DownloadLink}";
     }
