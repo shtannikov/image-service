@@ -17,10 +17,9 @@ public class Function
         _snsClient = new AmazonSimpleNotificationServiceClient();
 
         var configurationRoot = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
+            .AddEnvironmentVariables()
             .Build();
-        _snsTopicArn = configurationRoot["ImageUploadedSnsTopicArn"];
+        _snsTopicArn = configurationRoot["ImageUploadedSnsTopicArn"]!;
     }
 
     public async Task FunctionHandler(SQSEvent sqsEvent, ILambdaContext lambdaContext)
