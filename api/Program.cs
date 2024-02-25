@@ -1,3 +1,4 @@
+using Amazon.Lambda;
 using Amazon.S3;
 using Amazon.SimpleNotificationService;
 using Amazon.SQS;
@@ -31,6 +32,7 @@ builder.Services.AddDbContext<NotificationsDbContext>(
 builder.Services.AddAWSService<IAmazonS3>();
 builder.Services.AddAWSService<IAmazonSimpleNotificationService>();
 builder.Services.AddAWSService<IAmazonSQS>();
+builder.Services.AddAWSService<IAmazonLambda>();
 
 builder.Services.AddTransient<IImageUploadedEventPublisher, ImageUploadedEventPublisher>();
 

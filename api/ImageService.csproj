@@ -7,7 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.7.0" />
         <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.300" />
+        <PackageReference Include="AWSSDK.Lambda" Version="3.7.304" />
         <PackageReference Include="AWSSDK.S3" Version="3.7.305.18" />
         <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.300.50" />
         <PackageReference Include="AWSSDK.SQS" Version="3.7.300.52" />
