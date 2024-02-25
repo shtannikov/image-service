@@ -1,4 +1,7 @@
+using System.Net;
+using System.Text.Json;
 using Amazon;
+using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -15,19 +18,31 @@ public class Function
         .AddEnvironmentVariables()
         .Build();
 
-    public async Task<string> FunctionHandler(LambdaEvent lambdaEvent, ILambdaContext context)
+    public async Task<APIGatewayProxyResponse> FunctionHandler(LambdaEvent lambdaEvent, ILambdaContext lambdaContext)
     {
-        var eventSource = lambdaEvent.DetailType ?? "Unknown";
-        context.Logger.LogInformation($"The function triggered by the following service: {eventSource}");
+        var eventSource = lambdaEvent.GetSource();
+        lambdaContext.Logger.Log($"The function is triggered by the following service: {eventSource}");
 
-        var lostImages = await GetLostImages(context);
+        var lostImages = await GetLostImages();
 
-        return lostImages.Any()
-            ? $"The following images are not found: {string.Join(", ", lostImages.Select(i => i.Name))}"
-            : "Everything is consistent";
+        var result = lostImages.Any()
+            ? new APIGatewayProxyResponse
+            {
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+                Body = $"The following images are not found: {string.Join(", ", lostImages.Select(i => i.Name))}"
+            }
+            : new APIGatewayProxyResponse
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Body = "Everything is consistent"
+            };
+
+        lambdaContext.Logger.Log($"Result: {JsonSerializer.Serialize(result)}");
+
+        return result;
     }
 
-    private async Task<IReadOnlyCollection<ImageMetadata>> GetLostImages(ILambdaContext context)
+    private async Task<IReadOnlyCollection<ImageMetadata>> GetLostImages()
     {
         var dbContext = new ImagesDbContext(_configuration["dbConnectionString"]!);
 
