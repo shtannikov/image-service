@@ -23,6 +23,8 @@ public class NotificationsController : ControllerBase
     }
 
     [HttpPost("subscriptions")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create(string email)
     {
         var existingSubscriber = _notificationsDbContext.Subscribers.SingleOrDefault(s => s.Email == email);
@@ -57,6 +59,9 @@ public class NotificationsController : ControllerBase
     }
 
     [HttpDelete("subscriptions")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete(string email)
     {
         var subscriber = _notificationsDbContext.Subscribers.SingleOrDefault(s => s.Email == email);

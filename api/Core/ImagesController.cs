@@ -27,7 +27,9 @@ public class ImagesController : ControllerBase
     }
 
     [HttpPost("content")]
-    public async Task<IActionResult> Upload(IFormFile image)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ImageMetadata>> Upload(IFormFile image)
     {
         var imageName = Path.GetFileNameWithoutExtension(image.FileName);
 
@@ -57,10 +59,12 @@ public class ImagesController : ControllerBase
 
         await SendEventAsync(newImageMetadata);
 
-        return Ok();
+        return Ok(newImageMetadata);
     }
 
     [HttpGet("content")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Download([FromQuery(Name="image-name")] string imageName)
     {
         var imageMetadata = _imagesDbContext.Metadata.SingleOrDefault(m => m.Name == imageName);
@@ -72,6 +76,8 @@ public class ImagesController : ControllerBase
     }
 
     [HttpDelete("content")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete([FromQuery(Name="image-name")] string imageName)
     {
         var imageMetadata = _imagesDbContext.Metadata.SingleOrDefault(m => m.Name == imageName);
@@ -83,11 +89,13 @@ public class ImagesController : ControllerBase
         _imagesDbContext.Metadata.Remove(imageMetadata);
         await _imagesDbContext.SaveChangesAsync();
 
-        return Ok();
+        return NoContent();
     }
 
     [HttpGet("metadata")]
-    public IActionResult GetMetadata([FromQuery(Name="image-name")] string? imageName)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<ImageMetadata> GetMetadata([FromQuery(Name="image-name")] string? imageName)
     {
         if (imageName is null)
         {
@@ -96,10 +104,10 @@ public class ImagesController : ControllerBase
                 .Skip(randomCount)
                 .FirstOrDefault();
 
-            IActionResult result = randomImageMetadata is null
-                ? NotFound("There are no images yet")
-                : Ok(randomImageMetadata);
-            return result;
+            if (randomImageMetadata is null)
+                return NotFound("There are no images yet");
+
+            return Ok(randomImageMetadata);
         }
 
         var imageMetadata = _imagesDbContext.Metadata.SingleOrDefault(m => m.Name == imageName);
