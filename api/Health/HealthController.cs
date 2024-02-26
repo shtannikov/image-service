@@ -21,7 +21,7 @@ public class HealthController : ControllerBase
         _awsConfig = awsConfig.Value;
     }
 
-    [HttpGet("")]
+    [HttpGet("consistency-probe")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Check()
@@ -29,7 +29,7 @@ public class HealthController : ControllerBase
         var response = await _lambdaClient.InvokeAsync(
             new InvokeRequest
             {
-                FunctionName = _awsConfig.HealthCheckFunctionName,
+                FunctionName = _awsConfig.ConsistencyCheckFunctionName,
                 Payload = "{ \"detail-type\": \"Image Service\" }"
             });
         var deserializedResponse = await JsonSerializer.DeserializeAsync<APIGatewayProxyResponse>(response.Payload);
