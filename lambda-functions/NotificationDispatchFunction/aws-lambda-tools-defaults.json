@@ -1,0 +1,8 @@
+{
+  "profile": "cli",
+  "region": "us-east-1",
+  "configuration": "Release",
+  "template": "template.yaml",
+  "stack-name": "notification-dispatch-function",
+  "s3-bucket": "shtannikov-notification-dispatch-function"
+}

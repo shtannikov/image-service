@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  DispatchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: shtannikov-notification-dispatch-function
+      CodeUri: .
+      MemorySize: 128
+      Timeout: 15
+      Handler: >-
+        NotificationDispatchFunction::NotificationDispatchFunction.Function::FunctionHandler
+      Runtime: dotnet6
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          ImageUploadedSnsTopicArn: >-
+            arn:aws:sns:us-east-1:965144671362:shtannikov-image-uploaded-notification-topic
+      PackageType: Zip
+      Role: arn:aws:iam::965144671362:role/ImageServiceRole
+      Events:
+        SqsEvent:
+          Type: SQS
+          Properties:
+            Queue: arn:aws:sqs:us-east-1:965144671362:shtannikov-image-uploaded-notification-queue
+            BatchSize: 10
