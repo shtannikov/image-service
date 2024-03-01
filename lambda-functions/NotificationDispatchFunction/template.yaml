@@ -5,7 +5,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: shtannikov-notification-dispatch-function
-      CodeUri: .
       MemorySize: 128
       Timeout: 15
       Handler: >-
@@ -17,7 +16,6 @@ Resources:
         Variables:
           ImageUploadedSnsTopicArn: >-
             arn:aws:sns:us-east-1:965144671362:shtannikov-image-uploaded-notification-topic
-      PackageType: Zip
       Role: arn:aws:iam::965144671362:role/ImageServiceRole
       Events:
         SqsEvent:

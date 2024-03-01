@@ -1,0 +1,30 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      dotnet: 6.0
+
+  pre_build:
+    commands:
+      - echo Restore started on `date`
+      - dotnet restore
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - dotnet build
+      - cd bin/Debug/net6.0
+
+  post_build:
+    commands:
+      - echo Publish started on `date`
+      - sam package
+        --s3-bucket shtannikov-notification-dispatch-function
+        --template-file template.yaml
+        --output-template-file output-template.yaml
+
+artifacts:
+  files:
+    - bin/Debug/net6.0/output-template.yaml
+  discard-paths: yes
